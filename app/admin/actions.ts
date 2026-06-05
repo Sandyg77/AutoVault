@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { getVehicleType } from "@/lib/vehicle-types";
 import { z } from "zod";
-import { Prisma } from "@/app/generated/prisma/client";
+// import { Prisma } from "@prisma/client";
 
 // Validation for the fields shared by every vehicle type.
 // z.coerce.* converts the string values that HTML forms always submit
@@ -68,7 +68,7 @@ function parseForm(formData: FormData) {
       status: base.data.status,
       description: base.data.description,
       images: [base.data.imageUrl],
-      specs: specs.data as Prisma.InputJsonValue,
+      specs: specs.data as object, // will be JSON.stringified by Prisma, no need to do it here
     },
   };
 }
