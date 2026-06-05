@@ -82,9 +82,9 @@ export async function createVehicle(
 
   await prisma.vehicle.create({ data: result.data });
 
-  revalidatePath("/"); // refresh the public storefront
-  revalidatePath("/admin"); // refresh the admin list
-  redirect("/admin");
+  revalidatePath("/");
+  revalidatePath("/admin");
+  redirect("/admin?toast=created");
 }
 
 // UPDATE
@@ -99,7 +99,7 @@ export async function updateVehicle(
 
   revalidatePath("/");
   revalidatePath("/admin");
-  redirect("/admin");
+  redirect("/admin?toast=updated");
 }
 
 // DELETE
@@ -107,4 +107,5 @@ export async function deleteVehicle(id: string) {
   await prisma.vehicle.delete({ where: { id } });
   revalidatePath("/");
   revalidatePath("/admin");
+  redirect("/admin?toast=deleted");
 }

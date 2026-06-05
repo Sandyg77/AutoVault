@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { Search, X } from "lucide-react";
 import { VehicleCard } from "@/components/VehicleCard";
 import { vehicleTypeKeys, getVehicleType } from "@/lib/vehicle-types";
 import type { VehicleItem } from "@/lib/queries";
@@ -18,6 +19,14 @@ export function InventoryBrowser({ vehicles }: { vehicles: VehicleItem[] }) {
   const [type, setType] = useState("all");
   const [price, setPrice] = useState("all");
   const [sort, setSort] = useState("newest");
+
+  const isFiltered = search !== "" || type !== "all" || price !== "all" || sort !== "newest";
+  function resetFilters() {
+    setSearch("");
+    setType("all");
+    setPrice("all");
+    setSort("newest");
+  }
 
   // Recompute the visible list whenever a control changes.
   const filtered = useMemo(() => {
@@ -83,18 +92,21 @@ export function InventoryBrowser({ vehicles }: { vehicles: VehicleItem[] }) {
         </div>
 
         {/* Search + price + sort */}
-        <div className="flex flex-col gap-3 sm:flex-row">
-          <input
-            type="text"
-            placeholder="Search make or model..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="flex-1 rounded-lg border border-neutral-200 bg-white px-4 py-2 text-sm outline-none focus:border-emerald-500"
-          />
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+          <div className="relative flex-1">
+            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-400" />
+            <input
+              type="text"
+              placeholder="Search make or model..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full rounded-lg border border-neutral-300 bg-white py-2 pl-9 pr-4 text-sm text-neutral-900 placeholder:text-neutral-400 outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
+            />
+          </div>
           <select
             value={price}
             onChange={(e) => setPrice(e.target.value)}
-            className="rounded-lg border border-neutral-200 bg-white px-4 py-2 text-sm outline-none focus:border-emerald-500"
+            className="rounded-lg border border-neutral-300 bg-white px-4 py-2 text-sm text-neutral-900 outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
           >
             {priceBrackets.map((b) => (
               <option key={b.value} value={b.value}>
@@ -105,12 +117,21 @@ export function InventoryBrowser({ vehicles }: { vehicles: VehicleItem[] }) {
           <select
             value={sort}
             onChange={(e) => setSort(e.target.value)}
-            className="rounded-lg border border-neutral-200 bg-white px-4 py-2 text-sm outline-none focus:border-emerald-500"
+            className="rounded-lg border border-neutral-300 bg-white px-4 py-2 text-sm text-neutral-900 outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
           >
             <option value="newest">Newest</option>
             <option value="price-asc">Price: low to high</option>
             <option value="price-desc">Price: high to low</option>
           </select>
+          {isFiltered && (
+            <button
+              onClick={resetFilters}
+              className="flex shrink-0 items-center gap-1.5 rounded-full border border-neutral-300 px-4 py-1.5 text-sm font-medium text-neutral-500 transition hover:border-neutral-400 hover:bg-neutral-100 hover:text-neutral-900"
+            >
+              <X className="h-3.5 w-3.5" />
+              Clear all
+            </button>
+          )}
         </div>
       </div>
 
