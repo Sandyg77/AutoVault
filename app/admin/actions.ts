@@ -28,12 +28,15 @@ function parseForm(formData: FormData) {
   // Pull the base fields and validate them.
   const base = baseSchema.safeParse(Object.fromEntries(formData));
   if (!base.success) {
-    return { error: base.error.issues[0]?.message ?? "Invalid input" };
+    return {
+      ok: false as const,
+      error: base.error.issues[0]?.message ?? "Invalid input",
+    };
   }
 
   // Look up this type's spec schema from the registry.
   const typeDef = getVehicleType(base.data.type);
-  if (!typeDef) return { error: "Unknown vehicle type" };
+  if (!typeDef) return { ok: false as const, error: "Unknown vehicle type" };
 
   // Build the specs object from the type's fields, coercing numbers.
   const rawSpecs: Record<string, unknown> = {};
@@ -46,11 +49,15 @@ function parseForm(formData: FormData) {
   // Validate specs against the registry's Zod schema for this type.
   const specs = typeDef.specsSchema.safeParse(rawSpecs);
   if (!specs.success) {
-    return { error: specs.error.issues[0]?.message ?? "Invalid specs" };
+    return {
+      ok: false as const,
+      error: specs.error.issues[0]?.message ?? "Invalid specs",
+    };
   }
 
   // Assemble the database-ready record.
   return {
+    ok: true as const,
     data: {
       type: base.data.type,
       make: base.data.make,
@@ -67,9 +74,11 @@ function parseForm(formData: FormData) {
 }
 
 // CREATE
-export async function createVehicle(formData: FormData) {
+export async function createVehicle(
+  formData: FormData,
+): Promise<{ error: string } | void> {
   const result = parseForm(formData);
-  if ("error" in result) return result;
+  if (!result.ok) return { error: result.error };
 
   await prisma.vehicle.create({ data: result.data });
 
@@ -79,9 +88,12 @@ export async function createVehicle(formData: FormData) {
 }
 
 // UPDATE
-export async function updateVehicle(id: string, formData: FormData) {
+export async function updateVehicle(
+  id: string,
+  formData: FormData,
+): Promise<{ error: string } | void> {
   const result = parseForm(formData);
-  if ("error" in result) return result;
+  if (!result.ok) return { error: result.error };
 
   await prisma.vehicle.update({ where: { id }, data: result.data });
 

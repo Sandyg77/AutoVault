@@ -39,7 +39,7 @@ export default async function VehicleDetailPage({
             <img
               src={vehicle.images[0]}
               alt={`${vehicle.make} ${vehicle.model}`}
-              className="h-80 w-25 object-cover"
+              className="h-80 w-full object-cover"
             />
           </div>
 
