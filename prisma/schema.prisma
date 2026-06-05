@@ -1,0 +1,71 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ── Status enum ───────────────────────────────────────────────
+// Locks a vehicle's status to one of these three values only.
+// The database itself rejects anything else (no typos like "availabe"),
+// so bad data physically cannot get in.
+enum Status {
+  available
+  reserved
+  sold
+}
+
+// ── Vehicle model ─────────────────────────────────────────────
+// One row per vehicle. Shared fields are typed columns (integrity +
+// sortability); type-specific fields live in the flexible `specs` JSON.
+model Vehicle {
+  // Unique ID for each vehicle. @id = primary key.
+  // cuid() auto-generates a collision-resistant, non-guessable string.
+  id          String   @id @default(cuid())
+
+  // KEYSTONE FIELD: which kind of vehicle this is ("electric-car" | "camper-van").
+  // Links the row to its definition in the vehicle-types.ts registry.
+  // Kept as String (not enum) on purpose — adding a new type is a registry
+  // change, NOT a database migration. This is the core extensibility point.
+  type        String
+
+  make        String   // manufacturer, e.g. "Volkswagen"
+  model       String   // model name, e.g. "ID.4"
+  year        Int      // manufacture year (whole number, used for sort/filter)
+
+  // Price stored as integer CENTS, never a decimal — avoids floating-point
+  // rounding errors with money. €24,999.00 is stored as 2499900.
+  priceCents  Int
+
+  mileageKm   Int      // distance in km (metric — app is for Germany)
+
+  // Uses the enum above. New vehicles default to "available".
+  status      Status   @default(available)
+
+  description String   // free-text blurb shown on the detail page
+
+  // A list of image URLs (a vehicle has several photos).
+  // Postgres supports array columns natively.
+  images      String[]
+
+  // KEYSTONE FIELD: type-specific specs as flexible JSON (stored as JSONB).
+  // Electric car → { batteryKwh, rangeKm, drivetrain }
+  // Camper van   → { berths, lengthM, freshWaterL }
+  // Same column, different shape per type — governed by the Zod schema
+  // in the registry. This is what makes new vehicle types schema-free.
+  specs       Json
+
+  // Audit timestamps. createdAt is set once when the row is created;
+  // updatedAt auto-refreshes on every change. Lets you sort by "newest".
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
