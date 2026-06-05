@@ -2,6 +2,8 @@ import { getVehicles } from "@/lib/queries";
 import { VehicleCard } from "@/components/VehicleCard";
 import { InventoryBrowser } from "@/components/InventoryBrowser";
 
+export const dynamic = "force-dynamic";
+
 // Server component: fetches vehicles directly, no API route needed.
 export default async function HomePage() {
   const vehicles = await getVehicles();

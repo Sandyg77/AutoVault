@@ -3,6 +3,7 @@ import { VehicleForm } from "@/components/VehicleForm";
 import { getVehicleById } from "@/lib/queries";
 import { updateVehicle } from "@/app/admin/actions";
 
+export const dynamic = "force-dynamic";
 export default async function EditVehiclePage({
   params,
 }: {

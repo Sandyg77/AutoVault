@@ -4,6 +4,7 @@ import { formatPrice } from "@/lib/format";
 import { StatusBadge } from "@/components/StatusBadge";
 import { deleteVehicle } from "@/app/admin/actions";
 
+export const dynamic = "force-dynamic";
 export default async function AdminPage() {
   const vehicles = await getVehicles();
 

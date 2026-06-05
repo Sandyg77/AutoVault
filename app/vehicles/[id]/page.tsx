@@ -3,7 +3,7 @@ import { getVehicleById } from "@/lib/queries";
 import { getVehicleType } from "@/lib/vehicle-types";
 import { formatPrice, formatNumber } from "@/lib/format";
 import { StatusBadge } from "@/components/StatusBadge";
-
+export const dynamic = "force-dynamic";
 // In Next.js App Router, `params` is a Promise that we await.
 export default async function VehicleDetailPage({
   params,
