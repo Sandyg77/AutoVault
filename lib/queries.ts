@@ -7,6 +7,11 @@ export async function getVehicles() {
   });
 }
 
+// Fetch a single vehicle by its id. Returns null if not found.
+export async function getVehicleById(id: string) {
+  return prisma.vehicle.findUnique({ where: { id } });
+}
+
 // The type of a single vehicle, INFERRED from the query above.
 // Using Awaited<ReturnType<...>> means we never import the generated
 // Prisma type directly — the UI stays decoupled from the client path.
