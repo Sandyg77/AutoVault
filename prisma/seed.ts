@@ -1,20 +1,23 @@
-// Seed script: fills the database with starter vehicles
-
-// It deletes existing vehicles first (so re-running gives a clean set),
-// then inserts a mix of electric cars and camper vans. The `specs` object
-// for each one matches the shape defined in lib/vehicle-types.ts.
 import "dotenv/config";
 import { PrismaClient } from "@/app/generated/prisma/client";
 
 const prisma = new PrismaClient();
 
-// A small helper image set (seeded URLs — no real uploads in the prototype).
-const carImg = [
-  "https://images.unsplash.com/photo-1560958089-b8a1929cea89?w=800",
-];
-const vanImg = [
-  "https://images.unsplash.com/photo-1523987355523-c7b5b0dd90a7?w=800",
-];
+// ── Image pool
+// Three distinct car photos and three distinct van photos, assigned
+// below so no two neighbouring cards share an image.
+const carA =
+  "https://images.unsplash.com/photo-1560958089-b8a1929cea89?w=800&auto=format&fit=crop&q=80";
+const carB =
+  "https://images.unsplash.com/photo-1572191267337-c1705e46645c?w=800&auto=format&fit=crop&q=80"; // Tesla Model 3
+const carC =
+  "https://images.unsplash.com/photo-1712193424561-d1e2c09f524e?w=800&auto=format&fit=crop&q=80"; // Hyundai IONIQ 5
+const vanA =
+  "https://images.unsplash.com/photo-1523987355523-c7b5b0dd90a7?w=800&auto=format&fit=crop&q=80";
+const vanB =
+  "https://images.unsplash.com/photo-1511533910568-be3ffdc229bb?w=800&auto=format&fit=crop&q=80";
+const vanC =
+  "https://images.unsplash.com/photo-1581706677636-f6630fd1edf8?w=800&auto=format&fit=crop&q=80";
 
 const vehicles = [
   // ── Electric cars ──────────────────────────────────────────
@@ -23,11 +26,11 @@ const vehicles = [
     make: "Volkswagen",
     model: "ID.4 Pro",
     year: 2024,
-    priceCents: 4499900, // €44,999.00
+    priceCents: 4499900,
     mileageKm: 12000,
     status: "available" as const,
     description: "Spacious electric SUV with a long range, ideal for families.",
-    images: carImg,
+    images: [carA],
     specs: {
       batteryKwh: 77,
       rangeKm: 520,
@@ -46,7 +49,7 @@ const vehicles = [
     status: "available" as const,
     description:
       "Sporty electric gran coupé with premium interior and quick charging.",
-    images: carImg,
+    images: [carC],
     specs: {
       batteryKwh: 84,
       rangeKm: 590,
@@ -65,7 +68,7 @@ const vehicles = [
     status: "reserved" as const,
     description:
       "Efficient dual-motor sedan with class-leading software and range.",
-    images: carImg,
+    images: [carB],
     specs: {
       batteryKwh: 79,
       rangeKm: 629,
@@ -83,7 +86,7 @@ const vehicles = [
     mileageKm: 22000,
     status: "available" as const,
     description: "Retro-futuristic crossover with ultra-fast 800V charging.",
-    images: carImg,
+    images: [carC],
     specs: {
       batteryKwh: 72,
       rangeKm: 481,
@@ -101,7 +104,7 @@ const vehicles = [
     mileageKm: 9500,
     status: "available" as const,
     description: "Compact, agile city EV with a comfortable, tech-rich cabin.",
-    images: carImg,
+    images: [carA],
     specs: {
       batteryKwh: 60,
       rangeKm: 450,
@@ -119,7 +122,7 @@ const vehicles = [
     mileageKm: 15000,
     status: "sold" as const,
     description: "Premium compact SUV with optional seven seats.",
-    images: carImg,
+    images: [carB],
     specs: {
       batteryKwh: 67,
       rangeKm: 423,
@@ -139,7 +142,7 @@ const vehicles = [
     mileageKm: 28000,
     status: "available" as const,
     description: "Iconic pop-top camper, perfect for weekend trips for two.",
-    images: vanImg,
+    images: [vanA],
     specs: {
       berths: 4,
       lengthM: 4.9,
@@ -157,7 +160,7 @@ const vehicles = [
     mileageKm: 41000,
     status: "available" as const,
     description: "Compact motorhome with a clever layout and full kitchen.",
-    images: vanImg,
+    images: [vanB],
     specs: {
       berths: 4,
       lengthM: 5.99,
@@ -175,7 +178,7 @@ const vehicles = [
     mileageKm: 12000,
     status: "reserved" as const,
     description: "Versatile panel van conversion with rear bed and wet room.",
-    images: vanImg,
+    images: [vanC],
     specs: {
       berths: 2,
       lengthM: 6.0,
@@ -193,7 +196,7 @@ const vehicles = [
     mileageKm: 19000,
     status: "available" as const,
     description: "Comfortable two-berth van with a spacious living area.",
-    images: vanImg,
+    images: [vanA],
     specs: {
       berths: 2,
       lengthM: 5.99,
@@ -211,7 +214,7 @@ const vehicles = [
     mileageKm: 35000,
     status: "sold" as const,
     description: "Well-equipped compact camper with a transverse rear bed.",
-    images: vanImg,
+    images: [vanB],
     specs: {
       berths: 2,
       lengthM: 5.41,
@@ -229,7 +232,7 @@ const vehicles = [
     mileageKm: 7000,
     status: "available" as const,
     description: "Premium van with twin beds, large garage, and solar panel.",
-    images: vanImg,
+    images: [vanC],
     specs: {
       berths: 3,
       lengthM: 6.36,
